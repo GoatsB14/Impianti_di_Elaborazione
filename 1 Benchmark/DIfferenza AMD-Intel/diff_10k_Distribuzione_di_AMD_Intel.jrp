@@ -1,0 +1,76 @@
+﻿Local Here(
+	(table1 = New Table( "diff_10k",
+		Add Rows( 40 ),
+		New Column( "Media 10k Amd",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Set Values(
+				[1297.4, 1506.2, 1014.4, 1566, 1111.4, 1052, 1112.4, 1130, 1079.8,
+				991.8, 1103.2, 1029.8, 1068.6, 1032.4, 1127.4, 1144.4, 1077, 1073.6,
+				1089.8, 1049.6, 924.4, 957.4, 1005.8, 1029.4, 1081.2, 1033.6, 1031,
+				1081, 1050.8, 1055, 1160.6, 1178.8, 1128.2, 1340.8, 1155, 1140.8,
+				1173.4, 1044.6, 1019.6, 1094.4]
+			),
+			Set Display Width( 99 )
+		),
+		New Column( "Media 10k Intel",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Set Values(
+				[760.6, 696.4, 810, 720, 754.4, 705.4, 622.8, 758.2, 915.2, 724.4,
+				635.2, 800.4, 689.8, 628.8, 659.8, 802.8, 772.6, 727.8, 803.6, 719.2,
+				909.4, 833.4, 1240.2, 951.4, 886.4, 812.6, 717.2, 710.6, 629.2,
+				651.8, 790.2, 718.2, 703, 764.4, 796, 767.8, 777.8, 720.4, 867.6,
+				703]
+			),
+			Set Display Width( 98 )
+		),
+		New Column( "AMD - Intel",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Formula( :Media 10k Amd - :Media 10k Intel ),
+			Set Display Width( 75 )
+		)
+	)) << Run Formulas;
+	table1 << Distribution(
+		Continuous Distribution(
+			Column( :"AMD - Intel"n ),
+			Process Capability( 0 ),
+			Fit Normal( Goodness of Fit( 1 ) ),
+			Test Mean( 0 )
+		),
+		SendToReport(
+			Dispatch( {"AMD - Intel"}, "Distrib Histogram", FrameBox,
+				{Frame Size( 110, 269 )}
+			),
+			Dispatch( {"AMD - Intel"}, "Distrib Outlier Box", FrameBox,
+				{Frame Size( 37, 269 ), Set Graphlet(
+					Picture(
+						Try(
+							loader = If( Class Exists( "hllLoader" ),
+								New Object( "hllLoader" ),
+								Include( "$BUILTIN_SCRIPTS/hllib.jsl" )
+							);
+							loader:setDebug( 0 );
+							hlp = loader:lazyLoad( "hllPresets" );
+							hlp:launchBox Plot();
+						,
+							Write(
+								"
+Hover Label: Unable to launch Preset, please check that the Preset library is available at $BUILTIN_SCRIPTS/hllib.jsl"
+							);
+							Write( Eval Insert( "
+Exception: ^exception_msg^" ) );
+							Empty();
+						)
+					),
+					Title( "Box Plot preimpostato" ),
+					Reapply( 1 )
+				)}
+			)
+		)
+	);
+)

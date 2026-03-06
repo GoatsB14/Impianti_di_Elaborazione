@@ -1,0 +1,49 @@
+﻿Local Here(
+	(table1 = New Table( "diff_1M",
+		Add Rows( 40 ),
+		New Column( "Media Amd",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Set Values(
+				[118503, 86935.8, 67552.8, 77450.8, 75121, 56916.2, 58751.6, 72273,
+				50192.8, 60892.2, 61154.6, 50646, 59488.4, 50825.4, 70848.4, 50527,
+				50493.6, 65589, 50097.4, 50311.2, 130102.2, 64886.8, 95052.4,
+				79957.4, 53694.4, 49038, 49684.8, 83575, 51591.4, 55320.8, 58807.6,
+				50362.4, 59709.2, 49664.4, 74688.2, 49981, 50264.4, 50364.8, 49458.8,
+				50824.2]
+			),
+			Set Display Width( 75 )
+		),
+		New Column( "Media Intel",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Set Values(
+				[63515.4, 56662.8, 51305, 53277.8, 51389.6, 50508.8, 50467.8, 47585,
+				49395.6, 49822.8, 46692.2, 55964.4, 50441.6, 48447.8, 46301, 45716.4,
+				47313.2, 51149.6, 47735.4, 49437.4, 46208.2, 44748.8, 46617.6,
+				47166.2, 45450.6, 43471.4, 46484, 46680.6, 45752.2, 46430.6, 45585.8,
+				48536.4, 45607, 45530.6, 45248.2, 44318.8, 44513.4, 44510.2, 44702.6,
+				47899]
+			),
+			Set Display Width( 74 )
+		),
+		New Column( "AMD - INTEL",
+			Numeric,
+			"Continuous",
+			Format( "Best", 12 ),
+			Formula( :Media Amd - :Media Intel ),
+			Set Selected,
+			Set Display Width( 83 )
+		)
+	)) << Run Formulas;
+	table1 << Distribution(
+		Continuous Distribution(
+			Column( :"AMD - INTEL"n ),
+			Process Capability( 0 ),
+			Fit Normal( Goodness of Fit( 1 ) ),
+			Test Mean( 0 )
+		)
+	);
+)
